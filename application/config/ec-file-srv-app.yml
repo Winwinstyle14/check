@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: ec-file-srv
+  config:
+    import: optional:configserver:http://localhost:8200
+  cloud:
+    config:
+      uri: http://localhost:8200
+      profile: staging
+  profiles:
+    active:
+      - dev
+      - staging
+      - prod

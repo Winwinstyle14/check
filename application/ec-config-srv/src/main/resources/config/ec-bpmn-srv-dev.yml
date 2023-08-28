@@ -1,0 +1,67 @@
+# application config
+spring:
+  # datasource
+  datasource:
+    hikari:
+      connection-timeout: 200000
+      maximum-pool-size: 10
+    url: jdbc:postgresql://14.160.91.174:1632/ec_contract
+    username: postgres
+    password: 'postgres'
+  # spring jpa
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+
+# server config
+server:
+  port: 8215
+
+# eureka client
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
+
+# logging
+logging:
+  level:
+    - root: debug
+  file:
+    name: './logs/ec-bpmn-srv.log'
+
+#bpmn
+zeebe:
+  client:
+    broker:
+      gateway-address: 14.160.91.174:1326
+      #gateway-address: localhost:9182
+    security:
+      plaintext: true
+  bpmn:
+    flow:
+      sign-flow: SignFlow
+
+# api versioning
+vhc:
+  ec:
+    api:
+      version:
+        type: uri
+        uri-location: begin
+        uri-prefix: /api
+    auth:
+      customer:
+        token-url: lb://ec-auth-srv/api/v1/token
+        permit-urls:
+          - /api/v1/auth/**
+          - /api/v1/internal/**
+
+  micro-services:
+    contract:
+      api-url: http://ec-contract-srv/api/v1
+    customer:
+      api-url: http://ec-customer-srv/api/v1
+    notification:
+      api-url: http://ec-notification-srv/api/v1/internal/notification/startSignFlow

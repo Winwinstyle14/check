@@ -1,0 +1,52 @@
+# application config
+spring:
+  # datasource
+  datasource:
+    hikari:
+      connection-timeout: 200000
+      maximum-pool-size: 10
+    url: jdbc:postgresql://14.160.91.174:1632/ec_customer
+    username: postgres
+    password: 'postgres'
+  # spring jpa
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+
+# server config
+server:
+  port: 8211
+
+# eureka client
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.1.13:8761/eureka
+
+# logging
+logging:
+  level:
+    - root: debug
+  file:
+    name: './logs/ec-customer-srv.log'
+
+# api versioning
+vhc:
+  ec:
+    api:
+      version:
+        type: uri
+        uri-location: begin
+        uri-prefix: /api
+    auth:
+      customer:
+        token-url: lb://ec-auth-srv/api/v1/token
+        permit-urls:
+          - /api/v1/auth/**
+          - /api/v1/customers/password/**
+          - /api/v1/internal/**
+    micro-services:
+      file:
+        api-url: lb://ec-file-srv/api/v1
+    ldap: ldaps://10.3.12.18:636

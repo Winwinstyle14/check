@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1tzg57c" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.1.0">
+  <bpmn:process id="SignFlow" name="SignFlow" isExecutable="true">
+    <bpmn:serviceTask id="coordinator-contract" name="Điều phối">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="coordinator-contract" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1yepmtk</bpmn:incoming>
+      <bpmn:outgoing>Flow_00dwpne</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="review-contract" name="Xem xét">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="review-contract" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1fqhvkb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1a8wdeg</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="sign-contract" name="Ký hợp đồng">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="sign-contract" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_15lrf7i</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xe7jq2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="publish-contract" name="Văn thư ban hành">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="publish-contract" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0td4ph7</bpmn:incoming>
+      <bpmn:outgoing>Flow_03y37tr</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="Event_05488tf">
+      <bpmn:outgoing>Flow_1hvq187</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="validate-contract" name="Kiểm tra thông tin HĐ">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="validate-contract" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1hvq187</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ra8p1c</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_SignInput" default="Flow_14roe3l">
+      <bpmn:incoming>Flow_0ra8p1c</bpmn:incoming>
+      <bpmn:outgoing>Flow_14roe3l</bpmn:outgoing>
+      <bpmn:outgoing>Flow_08dibpq</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_1sr3556">
+      <bpmn:incoming>Flow_14roe3l</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_0x9x2wk" name="Từ chối?" default="Flow_0lhkf7d">
+      <bpmn:incoming>Flow_08dibpq</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ra4ul0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0lhkf7d</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0k8ak7i</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1hvq187" sourceRef="Event_05488tf" targetRef="validate-contract" />
+    <bpmn:sequenceFlow id="Flow_0ra8p1c" sourceRef="validate-contract" targetRef="Gateway_SignInput" />
+    <bpmn:sequenceFlow id="Flow_14roe3l" name="no" sourceRef="Gateway_SignInput" targetRef="Event_1sr3556" />
+    <bpmn:sequenceFlow id="Flow_08dibpq" name="yes" sourceRef="Gateway_SignInput" targetRef="Gateway_0x9x2wk">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=validInput = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0ra4ul0" name="approveType = 2" sourceRef="Gateway_0x9x2wk" targetRef="reject-contract">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= approveType = 2</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="start-contract" name="Khởi tạo">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="start-contract" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0uk7454</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wsauf4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_1txl0fq">
+      <bpmn:incoming>Flow_0lhkf7d</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fqhvkb</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0td4ph7</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1yepmtk</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15lrf7i</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0uk7454</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1om4b4g</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0lhkf7d" sourceRef="Gateway_0x9x2wk" targetRef="Gateway_1txl0fq" />
+    <bpmn:sequenceFlow id="Flow_1fqhvkb" name="type = 2" sourceRef="Gateway_1txl0fq" targetRef="review-contract">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= actionType = 2</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0td4ph7" name="type = 4" sourceRef="Gateway_1txl0fq" targetRef="publish-contract">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= actionType = 4</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1yepmtk" name="type = 1" sourceRef="Gateway_1txl0fq" targetRef="coordinator-contract">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= actionType = 1</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_15lrf7i" name="type = 3" sourceRef="Gateway_1txl0fq" targetRef="sign-contract">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= actionType = 3</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_07y7w5q">
+      <bpmn:incoming>Flow_1a8wdeg</bpmn:incoming>
+      <bpmn:incoming>Flow_03y37tr</bpmn:incoming>
+      <bpmn:incoming>Flow_0xe7jq2</bpmn:incoming>
+      <bpmn:incoming>Flow_0wsauf4</bpmn:incoming>
+      <bpmn:incoming>Flow_00dwpne</bpmn:incoming>
+      <bpmn:incoming>Flow_0zcuoom</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1a8wdeg" sourceRef="review-contract" targetRef="Event_07y7w5q" />
+    <bpmn:serviceTask id="reject-contract" name="Từ chối HĐ">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="reject-contract" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ra4ul0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kbeztc</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_08lle7d">
+      <bpmn:incoming>Flow_1kbeztc</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1kbeztc" sourceRef="reject-contract" targetRef="Event_08lle7d" />
+    <bpmn:sequenceFlow id="Flow_0uk7454" name="type = 0" sourceRef="Gateway_1txl0fq" targetRef="start-contract">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= actionType = 0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_03y37tr" sourceRef="publish-contract" targetRef="Event_07y7w5q" />
+    <bpmn:sequenceFlow id="Flow_0xe7jq2" sourceRef="sign-contract" targetRef="Event_07y7w5q" />
+    <bpmn:sequenceFlow id="Flow_0wsauf4" sourceRef="start-contract" targetRef="Event_07y7w5q" />
+    <bpmn:sequenceFlow id="Flow_00dwpne" sourceRef="coordinator-contract" targetRef="Event_07y7w5q" />
+    <bpmn:sequenceFlow id="Flow_0k8ak7i" name="approveType = 3" sourceRef="Gateway_0x9x2wk" targetRef="cancel-contract">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= approveType = 3</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="cancel-contract" name="Hủy HĐ">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="cancel-contract" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;sign_flow_cancel&#34;" target="notificationCode" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0k8ak7i</bpmn:incoming>
+      <bpmn:outgoing>Flow_1oz77w9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1om4b4g" name="type = 5" sourceRef="Gateway_1txl0fq" targetRef="delegacy-contract">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= actionType = 5</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="delegacy-contract" name="Ủy quyền">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="delegacy-contract" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1om4b4g</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zcuoom</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0zcuoom" sourceRef="delegacy-contract" targetRef="Event_07y7w5q" />
+    <bpmn:endEvent id="Event_115ra4b">
+      <bpmn:incoming>Flow_1oz77w9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1oz77w9" sourceRef="cancel-contract" targetRef="Event_115ra4b" />
+    <bpmn:textAnnotation id="TextAnnotation_1bst1dl">
+      <bpmn:text>Thông tin hợp lệ</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1xzy7pr" sourceRef="Gateway_SignInput" targetRef="TextAnnotation_1bst1dl" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="SignFlow">
+      <bpmndi:BPMNShape id="TextAnnotation_1bst1dl_di" bpmnElement="TextAnnotation_1bst1dl">
+        <dc:Bounds x="390" y="220" width="100" height="39" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_00dwpne_di" bpmnElement="Flow_00dwpne">
+        <di:waypoint x="980" y="220" />
+        <di:waypoint x="1116" y="220" />
+        <di:waypoint x="1116" y="320" />
+        <di:waypoint x="1252" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wsauf4_di" bpmnElement="Flow_0wsauf4">
+        <di:waypoint x="980" y="120" />
+        <di:waypoint x="1116" y="120" />
+        <di:waypoint x="1116" y="320" />
+        <di:waypoint x="1252" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xe7jq2_di" bpmnElement="Flow_0xe7jq2">
+        <di:waypoint x="980" y="420" />
+        <di:waypoint x="1116" y="420" />
+        <di:waypoint x="1116" y="320" />
+        <di:waypoint x="1252" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03y37tr_di" bpmnElement="Flow_03y37tr">
+        <di:waypoint x="980" y="520" />
+        <di:waypoint x="1116" y="520" />
+        <di:waypoint x="1116" y="320" />
+        <di:waypoint x="1252" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uk7454_di" bpmnElement="Flow_0uk7454">
+        <di:waypoint x="700" y="295" />
+        <di:waypoint x="700" y="120" />
+        <di:waypoint x="880" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="760" y="103" width="39" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kbeztc_di" bpmnElement="Flow_1kbeztc">
+        <di:waypoint x="560" y="500" />
+        <di:waypoint x="560" y="562" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1a8wdeg_di" bpmnElement="Flow_1a8wdeg">
+        <di:waypoint x="980" y="320" />
+        <di:waypoint x="1252" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15lrf7i_di" bpmnElement="Flow_15lrf7i">
+        <di:waypoint x="700" y="345" />
+        <di:waypoint x="700" y="420" />
+        <di:waypoint x="880" y="420" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="760" y="393" width="39" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yepmtk_di" bpmnElement="Flow_1yepmtk">
+        <di:waypoint x="700" y="295" />
+        <di:waypoint x="700" y="220" />
+        <di:waypoint x="880" y="220" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="760" y="202" width="39" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0td4ph7_di" bpmnElement="Flow_0td4ph7">
+        <di:waypoint x="700" y="345" />
+        <di:waypoint x="700" y="520" />
+        <di:waypoint x="880" y="520" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="760" y="503" width="40" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fqhvkb_di" bpmnElement="Flow_1fqhvkb">
+        <di:waypoint x="725" y="320" />
+        <di:waypoint x="880" y="320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="760" y="302" width="39" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lhkf7d_di" bpmnElement="Flow_0lhkf7d">
+        <di:waypoint x="585" y="320" />
+        <di:waypoint x="675" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ra4ul0_di" bpmnElement="Flow_0ra4ul0">
+        <di:waypoint x="560" y="345" />
+        <di:waypoint x="560" y="420" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="568" y="376" width="83" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08dibpq_di" bpmnElement="Flow_08dibpq">
+        <di:waypoint x="465" y="320" />
+        <di:waypoint x="535" y="320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="492" y="302" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14roe3l_di" bpmnElement="Flow_14roe3l">
+        <di:waypoint x="440" y="345" />
+        <di:waypoint x="440" y="462" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="449" y="376" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ra8p1c_di" bpmnElement="Flow_0ra8p1c">
+        <di:waypoint x="350" y="320" />
+        <di:waypoint x="415" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hvq187_di" bpmnElement="Flow_1hvq187">
+        <di:waypoint x="188" y="320" />
+        <di:waypoint x="250" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0k8ak7i_di" bpmnElement="Flow_0k8ak7i">
+        <di:waypoint x="560" y="295" />
+        <di:waypoint x="560" y="220" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="568" y="255" width="83" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1om4b4g_di" bpmnElement="Flow_1om4b4g">
+        <di:waypoint x="700" y="345" />
+        <di:waypoint x="700" y="620" />
+        <di:waypoint x="880" y="620" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="760" y="603" width="39" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zcuoom_di" bpmnElement="Flow_0zcuoom">
+        <di:waypoint x="980" y="620" />
+        <di:waypoint x="1116" y="620" />
+        <di:waypoint x="1116" y="320" />
+        <di:waypoint x="1252" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oz77w9_di" bpmnElement="Flow_1oz77w9">
+        <di:waypoint x="560" y="140" />
+        <di:waypoint x="560" y="88" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1vzwa4h_di" bpmnElement="coordinator-contract">
+        <dc:Bounds x="880" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0pqv23v_di" bpmnElement="review-contract">
+        <dc:Bounds x="880" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1239wkp_di" bpmnElement="sign-contract">
+        <dc:Bounds x="880" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1htkhku_di" bpmnElement="publish-contract">
+        <dc:Bounds x="880" y="480" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_05488tf_di" bpmnElement="Event_05488tf">
+        <dc:Bounds x="152" y="302" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1f30cis_di" bpmnElement="validate-contract">
+        <dc:Bounds x="250" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1t1o3i7_di" bpmnElement="Gateway_SignInput" isMarkerVisible="true">
+        <dc:Bounds x="415" y="295" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1sr3556_di" bpmnElement="Event_1sr3556">
+        <dc:Bounds x="422" y="462" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0x9x2wk_di" bpmnElement="Gateway_0x9x2wk" isMarkerVisible="true">
+        <dc:Bounds x="535" y="295" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="578" y="293" width="43" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0q07gho_di" bpmnElement="start-contract">
+        <dc:Bounds x="880" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1txl0fq_di" bpmnElement="Gateway_1txl0fq" isMarkerVisible="true">
+        <dc:Bounds x="675" y="295" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07y7w5q_di" bpmnElement="Event_07y7w5q">
+        <dc:Bounds x="1252" y="302" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ix4850_di" bpmnElement="reject-contract">
+        <dc:Bounds x="510" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_08lle7d_di" bpmnElement="Event_08lle7d">
+        <dc:Bounds x="542" y="562" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0a01n3u_di" bpmnElement="cancel-contract">
+        <dc:Bounds x="510" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0hf40nh_di" bpmnElement="delegacy-contract">
+        <dc:Bounds x="880" y="580" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_115ra4b_di" bpmnElement="Event_115ra4b">
+        <dc:Bounds x="542" y="52" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1xzy7pr_di" bpmnElement="Association_1xzy7pr">
+        <di:waypoint x="439" y="296" />
+        <di:waypoint x="438" y="259" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

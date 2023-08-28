@@ -1,0 +1,112 @@
+# application config
+spring:
+  # datasource
+  datasource:
+    hikari:
+      connection-timeout: 200000
+      maximum-pool-size: 10
+    url: jdbc:postgresql://14.160.91.174:1632/ec_notification
+    username: postgres
+    password: 'postgres'
+  # spring jpa
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+  #rabbitmq
+  rabbitmq:
+    host: 192.168.1.6
+    port: 5672
+    username: admin
+    password: password
+  #mail
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: mobifone.econtract@gmail.com
+    password: 1234567a@
+    port: 587
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            trust: smtp.gmail.com
+        debug: true
+    test-connection: false
+
+# server config
+server:
+  port: 8214
+
+# eureka client
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.1.13:8761/eureka
+
+# logging
+logging:
+  level:
+    - root: debug
+  file:
+    name: './logs/ec-notification-srv.log'
+
+#rabbitmq
+rabbitmq:
+  exchange: econtract_exchange
+  email:
+    queue: email_queue
+    routing: email_routing
+  sms:
+    queue: sms_queue
+    routing: sms_routing
+
+#smpp
+smpp:
+  smpp-id: 0
+  ip: 10.151.89.78
+  port: 6200
+  system-id: account
+  password: password
+  address-range: 999
+  system-type: ''
+  num-sessions: 1
+  source-tone: 5
+  source-npi: 0
+  destination-tone: 1
+  destination-npi: 1
+  bind-option: tr
+
+# api versioning
+vhc:
+  ec:
+    notification:
+      code:
+        reset-password: reset_password
+        account-notice: account_notice
+        sign-flow-coordinator: sign_flow_coordinator
+        sign-flow-review: sign_flow_review
+        sign-flow-sign: sign_flow_sign
+        sign-flow-publish: sign_flow_publish
+        sign-flow-reject: sign_flow_reject
+        sign-flow-finish: sign_flow_finish
+        contract-share-notice: contract_share_notice
+        contract-about-exprire: contract_about_exprire
+        contract-exprire: contract_exprire
+        contract-share-template: contract_share_template
+    api:
+      version:
+        type: uri
+        uri-location: begin
+        uri-prefix: /api
+    auth:
+      customer:
+        token-url: lb://ec-auth-srv/api/v1/token
+        permit-urls:
+          - /api/v1/auth/**
+          - /api/v1/internal/**

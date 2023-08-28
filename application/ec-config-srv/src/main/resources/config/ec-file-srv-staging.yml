@@ -1,0 +1,51 @@
+# application config
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
+# server config
+server:
+  port: 8213
+
+# eureka client
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.1.13:8761/eureka
+
+# logging
+logging:
+  level:
+    - root: debug
+  file:
+    name: './logs/ec-file-srv.log'
+
+vhc:
+  ec:
+    minio:
+      url: http://14.160.91.174:1390
+      credentials:
+        access-key: "ec_admin"
+        secret-key: "Abcd@2021"
+      expires: 2 # hours
+    api:
+      version:
+        type: uri
+        uri-location: begin
+        uri-prefix: /api
+    internal:
+      customer-srv:
+        url: http://localhost:8211/api/v1
+    http:
+      timeout: 1000
+    auth:
+      customer:
+        token-url: lb://ec-auth-srv/api/v1/token
+        permit-urls:
+          - /api/v1/buckets/**
+          - /api/v1/internal/**
+          - /api/v1/tmp/**
+    micro-services:
+      gateway:
+        api-url: http://14.160.91.174:1387/api/v1

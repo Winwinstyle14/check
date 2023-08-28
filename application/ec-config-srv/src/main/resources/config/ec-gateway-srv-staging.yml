@@ -1,0 +1,54 @@
+# server
+server:
+  port: 8762
+
+# eureka client
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.1.13:8761/eureka
+
+# application
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+      routes:
+        # auth service
+        - id: ec-auth-srv
+          uri: lb://ec-auth-srv
+          predicates:
+            - Path=/api/v1/groups/**, /api/v1/auth/**, /api/v1/token
+        # customer service
+        - id: ec-customer-srv
+          uri: lb://ec-customer-srv
+          predicates:
+            - Path=/api/v1/organizations/**, /api/v1/customers/**
+        # file service
+        - id: ec-file-srv
+          uri: lb://ec-file-srv
+          predicates:
+            - Path=/api/v1/upload/**
+        # contract service
+        - id: ec-contract-srv
+          uri: lb://ec-contract-srv
+          predicates:
+            - Path=/api/v1/contract-types/**, /api/v1/contracts/**, /api/v1/participants/**, /api/v1/documents/**, /api/v1/fields/**, /api/v1/processes/**
+        # notification service
+        - id: ec-notification-srv
+          uri: lb://ec-notification-srv
+          predicates:
+            - Path=/api/v1/notification/**
+
+# vhc custom
+vhc:
+  ec:
+    cors:
+      allowOrigin: '*'
+      allowCredentials: true
+      allowHeaders: '*'
+      allowMethods: get, post, put, patch, delete, options

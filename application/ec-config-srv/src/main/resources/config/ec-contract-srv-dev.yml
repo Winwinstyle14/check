@@ -1,0 +1,100 @@
+# application config
+spring:
+  # datasource
+  datasource:
+    hikari:
+      connection-timeout: 200000
+      maximum-pool-size: 10
+      data-source-properties:
+        stringtype: unspecified
+    url: jdbc:postgresql://14.160.91.174:1632/ec_contract
+    username: postgres
+    password: 'postgres'
+  # spring jpa
+  jpa:
+    generate-ddl: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+    hibernate:
+      ddl-auto: validate
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
+# server config
+server:
+  port: 8212
+
+# eureka client
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
+
+# logging
+logging:
+  level:
+    - root: debug
+  file:
+    name: './logs/ec-contract-srv.log'
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} %5p [%c]:%L - %m%n'
+
+
+# api versioning
+vhc:
+  ec:
+    api:
+      version:
+        type: uri
+        uri-location: begin
+        uri-prefix: /api
+        site: nb
+    auth:
+      customer:
+        token-url: lb://ec-auth-srv/api/v1/token
+        permit-urls:
+          - /api/v1/auth/**
+          - /api/v1/contracts/internal/**
+          - /api/v1/recipients/internal/**
+          - /api/v1/ceca/**
+          - /api/v1/handle/**
+    http:
+      timeout: 2 # seconds
+    temporary:
+      directory: ./tmp
+    micro-services:
+      file:
+        api-url: lb://ec-file-srv/api/v1
+      customer:
+        api-url: lb://ec-customer-srv/api/v1
+      bpm:
+        api-url: lb://ec-bpmn-srv/api/v1
+      gateway:
+        api-url: http://localhost:8762/api/v1
+    mobifone:
+      sign-service:
+        sign-api-url: https://mobifone-econtract.vn/SignService/v2/sign-document
+        sign-api-url-v3: https://mobifone-econtract.vn/SignService/v3/sign-document
+        sign-api-verify-url: https://econtract.mobifone.vn/CheckSignature/signatureInfo/getSignatureInfo
+        sign-api-pkcs-url-create-signature: https://mobifone-econtract.vn/SignService/v4/create-empty-signature-token
+        sign-api-pkcs-url-merge: https://mobifone-econtract.vn/SignService/v4/merge-signature-token
+        download-api-url: https://mobifone-econtract.vn/SignService/download-signed-document
+        hsm-auth-api-url: https://econtract.mobifone.vn/HsmService/login
+        hsm-sign-api-url: https://econtract.mobifone.vn/HsmService/signPDF
+        ekyc-recognition-url: http://ekyc2.mobifone.ai/v2/recognition
+        ekyc-verification-url: http://ekyc2.mobifone.ai/v2/verification
+        ekyc-api-key: 9b84cd8c-f042-11ec-aae7-0c4de99e932e
+      ceca-service:
+        request-to-ceca-url: https://econtract.mobifone.vn/ceca/request/request-to-CeCA
+
+sign-image:
+        otp:
+          template: Ban dang thuc hien ky hop dong tren MobiFone eContract. Ma OTP xac thuc la %d co hieu luc trong vong 2 phut.
+#        sign-info:
+#          width: 140
+#          height: 50
+

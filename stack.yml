@@ -1,0 +1,106 @@
+version: "3.9"
+
+services:
+  
+  # postgres database
+  ec-postgres-db:
+    image: registry-server.tha.localdomain:443/postgres:14.1-alpine
+    container_name: ec-pgdb-ins # ignore when deploying a stack in swarm mode
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: "WElcome12#-"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    
+  # discovery service
+  ec-discovery-srv:
+    image: registry-server.tha.localdomain:443/ec-discovery-srv:1.0.0
+    container_name: ec-discovery-srv-ins # ignore when deploying a stack in swarm mode
+    expose:
+      - "8761"
+    port:
+      - "8761:8761"
+  
+  # config service
+  ec-config-srv:
+    image: registry-server.tha.localdomain:443/ec-config-srv:1.0.0
+    container_name: ec-config-srv-ins # ignore when deploying a stack in swarm mode
+    port:
+      - "8200:8200"
+    depends_on:
+      - ec-discovery-srv
+
+  # auth service
+  ec-auth-srv:
+    image: registry-server.tha.localdomain:443/ec-auth-srv:1.0.0
+    container_name: ec-auth-srv-ins # ignore when deploying a stack in swarm mode
+    port:
+      - "8210:8210"
+    depends_on:
+      - ec-discovery-srv
+      - ec-config-srv
+
+  # customer service
+  ec-customer-srv:
+    image: registry-server.tha.localdomain:443/ec-customer-srv:1.0.0
+    container_name: ec-customer-srv-ins # ignore when deploying a stack in swarm mode
+    port:
+      - "8211:8211"
+    depends_on:
+      - ec-discovery-srv
+      - ec-config-srv
+
+  # contract service
+  ec-contract-srv:
+    image: registry-server.tha.localdomain:443/ec-contract-srv:1.0.0
+    container_name: ec-contract-srv-ins # ignore when deploying a stack in swarm mode
+    port:
+      - "8212:8212"
+    depends_on:
+      - ec-discovery-srv
+      - ec-config-srv
+
+  # bpmn service
+  ec-bpmn-srv:
+    image: registry-server.tha.localdomain:443/ec-bpmn-srv:1.0.0
+    container_name: ec-bpmn-srv-ins # ignore when deploying a stack in swarm mode
+    port:
+      - "8215:8215"
+    depends_on:
+      - ec-discovery-srv
+      - ec-config-srv
+
+  # file service
+  ec-file-srv:
+    image: registry-server.tha.localdomain:443/ec-file-srv:1.0.0
+    container_name: ec-file-srv-ins # ignore when deploying a stack in swarm mode
+    port:
+      - "8213:8213"
+    depends_on:
+      - ec-discovery-srv
+      - ec-config-srv
+
+  # notification service
+  ec-file-srv:
+    image: registry-server.tha.localdomain:443/ec-notification-srv:1.0.0
+    container_name: ec-notification-srv-ins # ignore when deploying a stack in swarm mode
+    port:
+      - "8214:8214"
+    depends_on:
+      - ec-discovery-srv
+      - ec-config-srv
+  
+  # gateway service
+  ec-gateway-srv:
+    image: registry-server.tha.localdomain:443/ec-gateway-srv:1.0.0
+    container_name: ec-gateway-srv-ins # ignore when deploying a stack in swarm mode
+    port:
+      - "8762:8762"
+    depends_on:
+      - ec-discovery-srv
+      - ec-config-srv
+
+# config networks
+networks:
+  driver: overlay

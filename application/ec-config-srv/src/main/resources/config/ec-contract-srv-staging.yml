@@ -1,0 +1,70 @@
+# application config
+spring:
+  # datasource
+  datasource:
+    hikari:
+      connection-timeout: 200000
+      maximum-pool-size: 10
+      data-source-properties:
+        stringtype: unspecified
+    url: jdbc:postgresql://14.160.91.174:1632/ec_contract
+    username: postgres
+    password: 'postgres'
+  # spring jpa
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
+# server config
+server:
+  port: 8212
+
+# eureka client
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.1.13:8761/eureka
+
+# logging
+logging:
+  level:
+    - root: debug
+  file:
+    name: './logs/ec-contract-srv.log'
+
+# api versioning
+vhc:
+  ec:
+    api:
+      version:
+        type: uri
+        uri-location: begin
+        uri-prefix: /api
+    auth:
+      customer:
+        token-url: lb://ec-auth-srv/api/v1/token
+        permit-urls:
+          - /api/v1/auth/**
+          - /api/v1/contracts/internal/**
+          - /api/v1/recipients/internal/**
+    http:
+      timeout: 2 # seconds
+    temporary:
+      directory: ./tmp
+    micro-services:
+      file:
+        api-url: lb://ec-file-srv/api/v1
+      customer:
+        api-url: lb://ec-customer-srv/api/v1
+      bpm:
+        api-url: lb://ec-bpmn-srv/api/v1
+    mobifone:
+      sign-service:
+        sign-api-url: https://econtract.mobifone.vn/SignService/v2/sign-document
+        sign-api-verify-url: https://econtract.mobifone.vn/CheckSignature/signatureInfo/getSignatureInfo
+        download-api-url: https://econtract.mobifone.vn/SignService/download-signed-document
